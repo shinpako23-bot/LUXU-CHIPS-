@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LUXU CHIPS | The Golden Crunch</title>
+<style>
+:root{--green:#123f2a;--green2:#1f6541;--gold:#e7b83f;--cream:#fff8e8;--ink:#20352a}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--cream);color:var(--ink)}
+header{background:var(--green);color:white;padding:14px 5%;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-weight:900;letter-spacing:1.5px;color:#f6d77e;font-size:23px}.tag{font-size:12px;color:#fff1c6;letter-spacing:2px}
+nav{display:flex;gap:8px;flex-wrap:wrap}button{border:0;border-radius:22px;padding:11px 16px;background:var(--gold);color:#173b28;font-weight:bold;cursor:pointer}
+nav button{background:#fff8e8}main{max-width:1100px;margin:auto;padding:22px}
+.hero{background:linear-gradient(120deg,#103d29,#28764b);color:white;border-radius:22px;padding:38px 25px;text-align:center}
+.hero h1{font-size:clamp(28px,6vw,48px);margin:8px 0;color:#ffdf86}.hero p{font-size:17px}
+.section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:28px 0 14px}
+input{padding:12px;border:1px solid #c9d4ca;border-radius:12px;font-size:16px;width:min(100%,320px)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
+.card{background:white;border:1px solid #eee2c9;border-radius:18px;padding:18px;box-shadow:0 5px 18px #1b422010}
+.pic{height:125px;border-radius:14px;background:#fff2c8;display:grid;place-items:center;font-size:65px}
+.card h3{margin:13px 0 6px}.muted{color:#66756b;font-size:14px}.price{font-weight:bold;color:var(--green2);font-size:20px;margin:12px 0}
+.old{text-decoration:line-through;color:#89918b;font-size:14px;margin-left:8px;font-weight:normal}
+.actions{display:flex;gap:8px}.actions button:first-child{flex:1}.heart{background:#f8e8e8}
+.panel{background:white;border-radius:18px;padding:18px;margin-top:18px}
+.row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #eee}
+footer{text-align:center;background:var(--green);color:#fff1c6;padding:24px;margin-top:35px}
+.note{background:#fff0c2;padding:12px;border-radius:12px;font-size:13px;margin-top:14px}
+@media(max-width:520px){header{justify-content:center}nav{justify-content:center}.hero{padding:28px 16px}}
+</style>
+</head>
+<body>
+<header>
+  <div><div class="brand">🍌 LUXU CHIPS</div><div class="tag">THE GOLDEN CRUNCH</div></div>
+  <nav><button onclick="show('shop')">Shop</button><button onclick="show('cart')">Cart (<span id="count">0</span>)</button><button onclick="show('favs')">♡ Favourites</button></nav>
+</header>
+<main>
+<section id="welcome">
+  <div class="hero">
+    <div style="font-size:52px">🍌✨</div>
+    <h1>Welcome to LUXU CHIPS</h1>
+    <p>A little golden crunch in every bite.</p>
+    <button onclick="show('shop')">Start Shopping</button>
+  </div>
+</section>
+<section id="shop" hidden>
+  <div class="section-title"><h2>Our Banana Chips</h2><input id="search" placeholder="Search LUXU CHIPS products..." oninput="render()"></div>
+  <div class="grid" id="products"></div>
+</section>
+<section id="cart" hidden><h2>Your Cart</h2><div class="panel" id="cartitems">Your cart is empty.</div><div class="panel"><b id="total">Total: ₹0</b><p class="muted">Checkout and payment will be enabled after secure store setup.</p></div></section>
+<section id="favs" hidden><h2>Your Favourites</h2><div class="grid" id="favitems"></div></section>
+<div class="note">Website preview: cart and favourites work in this browser only. Customer accounts, admin product management, order storage, COD/UPI collection and secure checkout are not connected yet. Do not collect real customer details or payments on this preview.</div>
+</main>
+<footer>© LUXU CHIPS · THE GOLDEN CRUNCH</footer>
+<script>
+const items=[
+{id:1,name:"Classic Banana Chips",desc:"Golden crunchy traditional banana chips",price:99,mrp:129,emoji:"🍌"},
+{id:2,name:"Masala Banana Chips",desc:"A lively spicy crunch",price:119,mrp:149,emoji:"🌶️"},
+{id:3,name:"Salted Banana Chips",desc:"Simple, savoury and crisp",price:109,mrp:139,emoji:"🥣"},
+{id:4,name:"Family Jar",desc:"Share the golden crunch",price:199,mrp:249,emoji:"🎁"}];
+let cart={},favs=[];
+function show(id){["welcome","shop","cart","favs"].forEach(x=>document.getElementById(x).hidden=x!==id);if(id==="cart")drawCart();if(id==="favs")drawFavs();window.scrollTo(0,0)}
+function render(){let q=(document.getElementById("search")?.value||"").toLowerCase();document.getElementById("products").innerHTML=items.filter(p=>p.name.toLowerCase().includes(q)).map(card).join("")||"<p>No matching products.</p>"}
+function card(p){return `<article class="card"><div class="pic">${p.emoji}</div><h3>${p.name}</h3><div class="muted">${p.desc}</div><div class="price">₹${p.price}<span class="old">₹${p.mrp}</span></div><div class="actions"><button onclick="add(${p.id})">Add to Cart</button><button class="heart" onclick="fav(${p.id})">${favs.includes(p.id)?"♥":"♡"}</button></div></article>`}
+function add(id){cart[id]=(cart[id]||0)+1;document.getElementById("count").textContent=Object.values(cart).reduce((a,b)=>a+b,0)}
+function fav(id){favs=favs.includes(id)?favs.filter(x=>x!==id):[...favs,id];render();drawFavs()}
+function drawFavs(){document.getElementById("favitems").innerHTML=items.filter(p=>favs.includes(p.id)).map(card).join("")||"<p>No favourites saved yet.</p>"}
+function drawCart(){let keys=Object.keys(cart).filter(k=>cart[k]>0);document.getElementById("cartitems").innerHTML=keys.length?keys.map(k=>{let p=items.find(x=>x.id==k);return `<div class="row"><span>${p.emoji} ${p.name} × ${cart[k]}</span><span>₹${p.price*cart[k]} <button onclick="change(${k},-1)">−</button> <button onclick="change(${k},1)">+</button></span></div>`}).join(""):"Your cart is empty.";let sum=keys.reduce((s,k)=>s+items.find(p=>p.id==k).price*cart[k],0);document.getElementById("total").textContent="Total: ₹"+sum}
+function change(id,n){cart[id]=Math.max(0,(cart[id]||0)+n);document.getElementById("count").textContent=Object.values(cart).reduce((a,b)=>a+b,0);drawCart()}
+render();
+</script>
+</body>
+</html>
